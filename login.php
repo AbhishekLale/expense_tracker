@@ -43,12 +43,12 @@ if(isset($_POST['login'])){
             <div class="form-group">
                 <label for="mail">Email</label>
                 <span style="color: red;" ><?php if( isset($_POST['login']) && $email != $userinfo['email'] ) { echo "enter correct email"; } ?></span>
-                <input type="email" name="email" class="form-control" id="email" placeholder="">
+                <input type="email" name="email" class="form-control" id="email" placeholder="" required>
             </div>
             <div class="form-group">
                 <label for="city">Password</label>
                 <span style="color: red;" ><?php if( isset($_POST['login']) && $userpassword != $userinfo['password'] ) { echo "enter correct password"; } ?></span>
-                <input type="password" name="password" class="form-control" id="password" placeholder="">
+                <input type="password" name="password" class="form-control" id="password" placeholder="" required>
             </div>
             <input type="submit" name="login" class="btn btn-success" value="login">
         </form>
