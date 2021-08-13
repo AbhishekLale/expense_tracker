@@ -14,7 +14,7 @@ if (isset($_SESSION['email'])) {
   $result3 = mysqli_query($connection,$query3);
   
   
-  $query4 = "SELECT amount FROM transactions WHERE walletid='$walletid'";
+  $query4 = "SELECT amount,type FROM transactions WHERE walletid='$walletid'";
   $result4 = mysqli_query($connection,$query4);
   $sum = 0;
 
@@ -26,16 +26,21 @@ if (isset($_SESSION['email'])) {
   foreach($type_array as $key => $value){
     // echo $key." ".$value."<br>";
   }
-}
-  
-
-  while($amounts = mysqli_fetch_assoc($result4)){
-    
-    $sum = $sum + $amounts['amount'];
   }
   
+  $credited = 0;
+  $debited = 0;
+  while($amounts = mysqli_fetch_assoc($result4)){
+    if($amounts['type'] == 'credited'){
+      $credited = $credited + $amounts['amount'];
+    }
+    else{
+      $debited = $debited + $amounts['amount'];
+    }
+  }
 
-  $current_amount =  $initial_amount - $sum;
+  $current_amount = $initial_amount + $credited - $debited;
+
   $query5 = "UPDATE wallets SET current_amount='$current_amount' WHERE walletid='$walletid'";
   $result5 = mysqli_query($connection,$query5);
   if(!$result5){
@@ -134,14 +139,14 @@ if (isset($_SESSION['email'])) {
              </thead>
               <tbody>
                  <?php
-                   while ($transaction = mysqli_fetch_assoc($result3)) {
+                   while ($amounts = mysqli_fetch_assoc($result3)) {
                   ?>
                   <tr>
-                    <td><?php echo $transaction['to_payment']; ?></td>
-                    <td><?php echo $transaction['type']; ?></td>
-                    <td><?php echo $transaction['comment']; ?></td>
-                    <td><?php echo $transaction['timestamp']; ?></td>
-                    <td><?php echo $transaction['amount']; ?></td>
+                    <td><?php echo $amounts['to_payment']; ?></td>
+                    <td><?php echo $amounts['type']; ?></td>
+                    <td><?php echo $amounts['comment']; ?></td>
+                    <td><?php echo $amounts['timestamp']; ?></td>
+                    <td><?php echo $amounts['amount']; ?></td>
                  </tr>
                   <?php
                       }
